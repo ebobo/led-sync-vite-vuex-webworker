@@ -1,18 +1,54 @@
-# Vue 3 + TypeScript + Vite
+# Vue 3 + TypeScript + Vite + VueX + WebWorker
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Project: LED Flasher
 
-## Recommended IDE Setup
+## Description
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+LED Flasher is a Vue.js application that demonstrates the use of Vue, Vuex, TypeScript, and Web Workers. It allows users to add and remove LED-like elements on the screen and control their flashing behavior using a Web Worker for timing.
 
-## Type Support For `.vue` Imports in TS
+## Features
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+Add and remove LED elements dynamically.
+Control the flashing of LEDs using a toggle switch.
+Utilize Web Workers for managing the flashing timing.
+State management with Vuex.
+Developed with Vue 3 and TypeScript for a robust frontend architecture.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Technology Stack
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+Vue 3
+Vuex 4
+TypeScript
+Web Workers
+
+##Installation
+To set up the project locally, follow these steps:
+
+### Clone the repository:
+
+bash
+git clone https://github.com/ebobo/led-sync-vite-vuex-webworker.git
+
+### Install dependencies:
+
+bash
+npm install
+
+### Run the development server:
+
+npm run dev
+
+## Usage
+
+After starting the development server, the application will be accessible at localhost:5173 (or a similar local URL).
+
+Use the "+ LED" and "- LED" buttons to add or remove LEDs.
+Use the "Flash LEDs" toggle switch to control the flashing behavior of LEDs.
+Contributing
+Contributions to the project are welcome. Please adhere to this project's Code of Conduct during your contributions.
+
+## License
+
+## Contact Information
+
+For support or queries, reach out to bobo_xu@hotmail.com
