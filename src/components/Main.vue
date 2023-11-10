@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onBeforeUnmount, onMounted, watch } from 'vue';
+import { defineComponent, ref, onBeforeUnmount, computed, watch } from 'vue';
+import { useStore } from 'vuex';
 import Led from './Led.vue';
-import Worker from '../workers/flashWorker?worker';
 
 interface LedItem {
   id: number;
@@ -32,13 +32,12 @@ export default defineComponent({
     Led,
   },
   setup() {
+    const store = useStore();
     const leds = ref<LedItem[]>([]);
-    const isFlashing = ref(false);
-    let intervalId: number | undefined;
     const isFlashingEnabled = ref(true); // New state for toggle switch
 
-    //create a flash timer worker
-    const worker = new Worker();
+    // Initialize Worker
+    store.dispatch('initializeWorker');
 
     const addLED = () => {
       leds.value.push({ id: Date.now() });
@@ -48,27 +47,14 @@ export default defineComponent({
       leds.value.pop();
     };
 
-    watch(isFlashingEnabled, (newValue) => {
-      if (!newValue) {
-        worker.postMessage('stop'); // Keep LEDs on when not flashing
-      } else {
-        worker.postMessage('start');
-      }
-    });
+    const isFlashing = computed(() => store.state.isFlashing);
 
-    onMounted(() => {
-      worker.postMessage('start');
-      worker.onmessage = (e: MessageEvent) => {
-        if (e.data === 'toggle') {
-          console.log('toggle');
-          isFlashing.value = !isFlashing.value;
-        }
-      };
+    watch(isFlashingEnabled, (newValue) => {
+      store.dispatch('toggleFlashing', newValue); // Stop flashing LEDs
     });
 
     onBeforeUnmount(() => {
-      worker.postMessage('stop');
-      worker.terminate();
+      store.dispatch('cleanupWorker');
     });
 
     return { leds, isFlashing, isFlashingEnabled, addLED, removeLED };
