@@ -5,6 +5,8 @@
     <!-- Space between buttons -->
     <button @click="removeLED">- LED</button>
     <p class="read-the-docs">Click buttons to add or remove LED</p>
+    <input type="checkbox" id="flash-toggle" v-model="isFlashingEnabled" />
+    <label for="flash-toggle"> Flash LEDs</label>
     <p class="led-count">{{ leds.length }}</p>
     <!-- LED Count Label -->
     <!-- Display number of LEDs -->
@@ -16,8 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onBeforeUnmount, onMounted } from 'vue';
+import { defineComponent, ref, onBeforeUnmount, onMounted, watch } from 'vue';
 import Led from './Led.vue';
+import Worker from '../workers/flashWorker?worker';
 
 interface LedItem {
   id: number;
@@ -31,7 +34,11 @@ export default defineComponent({
   setup() {
     const leds = ref<LedItem[]>([]);
     const isFlashing = ref(false);
-    let intervalId: number;
+    let intervalId: number | undefined;
+    const isFlashingEnabled = ref(true); // New state for toggle switch
+
+    //create a flash timer worker
+    const worker = new Worker();
 
     const addLED = () => {
       leds.value.push({ id: Date.now() });
@@ -41,19 +48,30 @@ export default defineComponent({
       leds.value.pop();
     };
 
-    onMounted(() => {
-      intervalId = setInterval(() => {
-        isFlashing.value = !isFlashing.value;
-      }, 1000);
-    });
-
-    onBeforeUnmount(() => {
-      if (intervalId !== undefined) {
-        clearInterval(intervalId);
+    watch(isFlashingEnabled, (newValue) => {
+      if (!newValue) {
+        worker.postMessage('stop'); // Keep LEDs on when not flashing
+      } else {
+        worker.postMessage('start');
       }
     });
 
-    return { leds, isFlashing, addLED, removeLED };
+    onMounted(() => {
+      worker.postMessage('start');
+      worker.onmessage = (e: MessageEvent) => {
+        if (e.data === 'toggle') {
+          console.log('toggle');
+          isFlashing.value = !isFlashing.value;
+        }
+      };
+    });
+
+    onBeforeUnmount(() => {
+      worker.postMessage('stop');
+      worker.terminate();
+    });
+
+    return { leds, isFlashing, isFlashingEnabled, addLED, removeLED };
   },
 });
 </script>
