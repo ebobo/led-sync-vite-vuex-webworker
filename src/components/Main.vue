@@ -37,7 +37,7 @@ export default defineComponent({
     const isFlashingEnabled = ref(true); // New state for toggle switch
 
     // Initialize Worker
-    store.dispatch('initializeWorker');
+    store.dispatch('flash/initializeWorker');
 
     const addLED = () => {
       leds.value.push({ id: Date.now() });
@@ -47,14 +47,14 @@ export default defineComponent({
       leds.value.pop();
     };
 
-    const isFlashing = computed(() => store.state.isFlashing);
+    const isFlashing = computed(() => store.state.flash.isFlashing);
 
     watch(isFlashingEnabled, (newValue) => {
-      store.dispatch('toggleFlashing', newValue); // Stop flashing LEDs
+      store.dispatch('flash/toggleFlashing', newValue); // Stop flashing LEDs
     });
 
     onBeforeUnmount(() => {
-      store.dispatch('cleanupWorker');
+      store.dispatch('flash/cleanupWorker');
     });
 
     return { leds, isFlashing, isFlashingEnabled, addLED, removeLED };
